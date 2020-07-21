@@ -1,12 +1,8 @@
 package com.vsiestov.tasks.rest.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Builder;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
 public class TaskDTO {
     private long id;
     private String name;

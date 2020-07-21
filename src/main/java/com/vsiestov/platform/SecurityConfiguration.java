@@ -32,6 +32,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/sign-in", "/sign-up", "/api-docs/**", "/swagger-ui/**")
             .permitAll()
+//            .antMatchers("/tasks").access("@webSecurity.check(authentication, request)")
             .anyRequest().authenticated()
             .and()
             .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtService))

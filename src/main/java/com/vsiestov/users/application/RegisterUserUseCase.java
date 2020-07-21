@@ -1,6 +1,7 @@
 package com.vsiestov.users.application;
 
 import com.vsiestov.shared.core.Result;
+import com.vsiestov.shared.core.UseCaseClass;
 import com.vsiestov.shared.core.ValidationDescription;
 import com.vsiestov.shared.exceptions.ValidationException;
 import com.vsiestov.users.domain.*;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Component
-public class RegisterUserUseCase {
+public class RegisterUserUseCase implements UseCaseClass<UserWithTokenDTO, RegistrationDTO> {
     private final UsersRepository usersRepository;
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -35,6 +36,7 @@ public class RegisterUserUseCase {
         this.jwtService = jwtService;
     }
 
+    @Override
     public UserWithTokenDTO execute(RegistrationDTO request) {
         Result<UserEmail> emailResult = UserEmail.create(request.getEmail());
         Result<UserName> firstNameResult = UserName.create(request.getFirstName(), "Provided first name is not valid", "firstName");
@@ -48,7 +50,7 @@ public class RegisterUserUseCase {
             passwordResult
         });
 
-        if (errors.size() > 0) {
+        if (!errors.isEmpty()) {
             throw new ValidationException(errors);
         }
 
@@ -61,12 +63,12 @@ public class RegisterUserUseCase {
             throw validationException;
         }
 
-        User user = new User();
-
-        user.setFirstName(firstNameResult.getValue());
-        user.setLastName(lastNameResult.getValue());
-        user.setEmail(emailResult.getValue());
-        user.setPassword(new UserPassword(bCryptPasswordEncoder.encode(passwordResult.getValue().getValue())));
+        User user = User.builder()
+            .email(emailResult.getValue())
+            .password(new UserPassword(bCryptPasswordEncoder.encode(passwordResult.getValue().getValue())))
+            .firstName(firstNameResult.getValue())
+            .lastName(lastNameResult.getValue())
+            .build();
 
         UserDTO userDTO = userMapper.toDTO(usersRepository.save(user));
         String token = jwtService.generateToken(userDTO);

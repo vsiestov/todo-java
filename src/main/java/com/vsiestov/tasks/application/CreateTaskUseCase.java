@@ -47,12 +47,12 @@ public class CreateTaskUseCase {
 
         UserDTO user = usersService.getCurrentlyLoggedInUser();
 
-        Task task = new Task();
-
-        task.setName(taskNameResult.getValue());
-        task.setDescription(taskDescriptionResult.getValue());
-        task.setUserId(user.getId());
-        task.setComplete(false);
+        Task task = Task.builder()
+            .name(taskNameResult.getValue())
+            .description(taskDescriptionResult.getValue())
+            .userId(user.getId())
+            .complete(false)
+            .build();
 
         return taskMapper.toDTO(taskRepository.save(task));
     }

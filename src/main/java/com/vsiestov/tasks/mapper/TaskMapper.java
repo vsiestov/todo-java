@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskMapper {
     public TaskDTO toDTO(Task task) {
-        return new TaskDTO(
-            task.getId(),
-            task.getName().getValue(),
-            task.getDescription().getValue(),
-            task.isComplete()
-        );
+        return TaskDTO.builder()
+            .id(task.getId())
+            .name(task.getName().getValue())
+            .description(task.getDescription().getValue())
+            .complete(task.isComplete())
+            .build();
     }
 }

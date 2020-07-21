@@ -49,11 +49,12 @@ public class RegisterUserUseCaseTest {
         UserName userFirstName = new UserName("Valeriy");
         UserName userLastName = new UserName("Siestov");
 
-        user = new User();
-        user.setEmail(userEmail);
-        user.setFirstName(userFirstName);
-        user.setLastName(userLastName);
-        user.setId(13);
+        user = User.builder()
+            .id(13)
+            .email(userEmail)
+            .firstName(userFirstName)
+            .lastName(userLastName)
+            .build();;
     }
 
     @Test
